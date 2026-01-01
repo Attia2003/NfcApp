@@ -6,12 +6,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ShowChart
 import androidx.compose.material.icons.outlined.ShowChart
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -29,7 +28,13 @@ fun StatusCard(
                 modifier = Modifier
                     .size(8.dp)
                     .background(
-                        if (active) Color(0xFF4CAF50) else Color.Red,
+                        if (active) {
+                            // Use primary color for active status, adapting to theme
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            // Use error color for inactive status
+                            MaterialTheme.colorScheme.error
+                        },
                         shape = CircleShape
                     )
             )
