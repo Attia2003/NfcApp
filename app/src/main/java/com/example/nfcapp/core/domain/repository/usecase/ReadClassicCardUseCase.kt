@@ -1,4 +1,4 @@
-package com.example.nfcapp.core.domain
+package com.example.nfcapp.core.domain.repository.usecase
 
 import android.nfc.Tag
 import com.example.nfcapp.core.domain.model.CardData

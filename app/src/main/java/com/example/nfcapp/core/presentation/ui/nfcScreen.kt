@@ -1,5 +1,6 @@
 package com.example.nfcapp.core.presentation.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,13 +26,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import com.example.nfcapp.R
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.example.nfcapp.core.presentation.NfcUiState
+import com.example.nfcapp.core.presentation.state.BackendStatus
 import com.example.nfcapp.core.presentation.NfcViewModel
-
+import com.example.nfcapp.core.presentation.state.NfcUiState
 
 
 @Composable
@@ -49,10 +52,10 @@ fun NfcScreen(viewModel: NfcViewModel) {
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "Tap a MIFARE Classic card",
-                        color = MaterialTheme.colorScheme.onBackground,
-                        style = MaterialTheme.typography.bodyLarge
+                    Image(
+                        painter = painterResource(id = R.drawable.nfc_scan_image),
+                        contentDescription = "Put UR CARD NEAR TO PHONE ",
+                        modifier = Modifier.size(300.dp)
                     )
                 }
             }
@@ -120,6 +123,7 @@ fun NfcScreen(viewModel: NfcViewModel) {
 
             is NfcUiState.Success -> {
                 val card = (uiState as NfcUiState.Success).cardData
+                val backendStatus = (uiState as NfcUiState.Success).backendStatus
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
@@ -138,6 +142,35 @@ fun NfcScreen(viewModel: NfcViewModel) {
                             status = "Active Session",
                             active = true
                         )
+                    }
+
+
+                    item {
+                        when (backendStatus) {
+                            is BackendStatus.Success -> {
+                                StatusCard(
+                                    status = "Sending to backend...",
+                                    active = true
+                                )
+                            }
+                            is BackendStatus.Success -> {
+                                StatusCard(
+                                    status = "✓ Sent successfully",
+                                    active = true
+                                )
+                            }
+                            is BackendStatus.Success -> {
+                                StatusCard(
+                                    status = "✗ Failed to send",
+                                    active = false
+                                )
+                            }
+
+
+                            else -> {
+
+                            }
+                        }
                     }
 
                     item {
