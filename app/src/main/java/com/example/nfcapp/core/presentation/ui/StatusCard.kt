@@ -29,10 +29,10 @@ fun StatusCard(
                     .size(8.dp)
                     .background(
                         if (active) {
-                            // Use primary color for active status, adapting to theme
+
                             MaterialTheme.colorScheme.primary
                         } else {
-                            // Use error color for inactive status
+
                             MaterialTheme.colorScheme.error
                         },
                         shape = CircleShape

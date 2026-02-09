@@ -5,20 +5,14 @@ import com.example.nfcapp.core.data.source.ReadDataSource
 import com.example.nfcapp.core.domain.model.CardData
 import com.example.nfcapp.core.domain.repository.NfcReadRepository
 import com.example.nfcapp.util.mergeNames
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 
 
 class NfcRepositoryImpl(
     private val source: ReadDataSource
 ) : NfcReadRepository {
 
-
     override suspend fun readClassicCard(tag: Tag): CardData {
-
         val uid = tag.id.joinToString("") { "%02X".format(it) }
-
 
         val firstName = source.readAscii(tag, 1, 0)
         val secondName = source.readAscii(tag, 3, 1)

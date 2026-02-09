@@ -35,6 +35,20 @@ import androidx.compose.ui.unit.dp
 import com.example.nfcapp.core.presentation.state.BackendStatus
 import com.example.nfcapp.core.presentation.NfcViewModel
 import com.example.nfcapp.core.presentation.state.NfcUiState
+import com.example.nfcapp.core.presentation.uistate.UiError
+
+/**
+ * Convert UiError to user-friendly message (FakeStore pattern)
+ */
+private fun UiError.toMessage(): String = when (this) {
+    UiError.NoInternet -> "No internet connection. Please check your network."
+    is UiError.Http -> "Server error (${this.code}). Please try again."
+    UiError.NfcTagLost -> "NFC tag was removed too quickly. Please try again."
+    UiError.NfcAuthenticationFailed -> "Failed to authenticate NFC card. Please ensure it's a valid card."
+    UiError.NfcReadFailed -> "Error reading NFC card. Please try again."
+    UiError.ServerError -> "Server error. Please try again later."
+    UiError.Unknown -> "An unexpected error occurred. Please try again."
+}
 
 
 @Composable
@@ -105,7 +119,7 @@ fun NfcScreen(viewModel: NfcViewModel) {
                             modifier = Modifier.padding(top = 16.dp)
                         )
                         Text(
-                            text = (uiState as NfcUiState.Error).message,
+                            text = (uiState as NfcUiState.Error).error.toMessage(),
                             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
                             style = MaterialTheme.typography.bodyMedium,
                             textAlign = TextAlign.Center,
@@ -147,7 +161,7 @@ fun NfcScreen(viewModel: NfcViewModel) {
 
                     item {
                         when (backendStatus) {
-                            is BackendStatus.Success -> {
+                            is BackendStatus.Sending -> {
                                 StatusCard(
                                     status = "Sending to backend...",
                                     active = true
@@ -155,20 +169,15 @@ fun NfcScreen(viewModel: NfcViewModel) {
                             }
                             is BackendStatus.Success -> {
                                 StatusCard(
-                                    status = "✓ Sent successfully",
+                                    status = "✓ ${backendStatus.message}",
                                     active = true
                                 )
                             }
-                            is BackendStatus.Success -> {
+                            is BackendStatus.Failed -> {
                                 StatusCard(
-                                    status = "✗ Failed to send",
+                                    status = "✗ ${backendStatus.error.toMessage()}",
                                     active = false
                                 )
-                            }
-
-
-                            else -> {
-
                             }
                         }
                     }
